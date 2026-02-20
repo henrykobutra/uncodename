@@ -21,7 +21,7 @@ const NOUNS = [
 const PREFIXES = ["Operation", "Project", "Protocol"];
 
 function pick<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+  return arr[Math.floor(Math.random() * arr.length)]!;
 }
 
 function generate() {
