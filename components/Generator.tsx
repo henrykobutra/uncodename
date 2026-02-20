@@ -2,13 +2,17 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-export type Mode = "projects" | "agents";
+export type Mode = "projects" | "agents" | "pets" | "startups";
 
 interface GeneratorProps {
   mode: Mode;
   generate: () => GeneratedName;
   tagline: string;
   buttonLabel: string;
+  /** Whether to uppercase the display (default true) */
+  uppercase?: boolean;
+  /** Optional nudge text with link */
+  nudge?: { text: string; linkText: string; href: string } | null;
 }
 
 export interface GeneratedName {
@@ -17,7 +21,28 @@ export interface GeneratedName {
   noun: string;
 }
 
-export default function Generator({ mode, generate, tagline, buttonLabel }: GeneratorProps) {
+const MODES: { href: string; label: string; mode: Mode }[] = [
+  { href: "/", label: "Projects", mode: "projects" },
+  { href: "/agents", label: "Agents", mode: "agents" },
+  { href: "/pets", label: "Pets", mode: "pets" },
+  { href: "/startups", label: "Startups", mode: "startups" },
+];
+
+const MODE_LABELS: Record<Mode, string> = {
+  projects: "Codename Generator",
+  agents: "Agent Name Generator",
+  pets: "Pet Name Generator",
+  startups: "Startup Name Generator",
+};
+
+export default function Generator({
+  mode,
+  generate,
+  tagline,
+  buttonLabel,
+  uppercase = true,
+  nudge = null,
+}: GeneratorProps) {
   const [name, setName] = useState<GeneratedName | null>(null);
   const [key, setKey] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -60,22 +85,25 @@ export default function Generator({ mode, generate, tagline, buttonLabel }: Gene
   const copyName = useCallback(() => {
     if (!name) return;
     const parts = [name.prefix, name.adj, name.noun].filter(Boolean);
-    navigator.clipboard.writeText(parts.join(" ").toUpperCase());
+    const text = parts.join(" ");
+    navigator.clipboard.writeText(uppercase ? text.toUpperCase() : text);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
-  }, [name]);
+  }, [name, uppercase]);
 
   if (!name) return null;
 
   const displayParts = [name.adj, name.noun].filter(Boolean);
-  const displayName = displayParts.join(" ").toUpperCase();
-  const fullDisplay = [name.prefix, name.adj, name.noun].filter(Boolean).join(" ").toUpperCase();
+  const displayName = displayParts.join(" ");
+  const formattedDisplay = uppercase ? displayName.toUpperCase() : displayName;
+  const fullParts = [name.prefix, name.adj, name.noun].filter(Boolean);
+  const fullDisplay = uppercase ? fullParts.join(" ").toUpperCase() : fullParts.join(" ");
 
   return (
     <main
       className="relative z-10 flex flex-col items-center justify-center h-screen select-none px-4"
       role="application"
-      aria-label={mode === "projects" ? "Codename Generator" : "Agent Name Generator"}
+      aria-label={MODE_LABELS[mode]}
     >
       {/* Live region for screen readers */}
       <div className="sr-only" aria-live="assertive" aria-atomic="true">
@@ -83,33 +111,26 @@ export default function Generator({ mode, generate, tagline, buttonLabel }: Gene
       </div>
 
       {/* Mode switcher */}
-      <nav className="absolute top-8 flex items-center gap-1 text-[11px] font-mono tracking-widest uppercase" aria-label="Generator mode">
-        <a
-          href="/"
-          className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
-            mode === "projects"
-              ? "text-zinc-200 bg-zinc-800/80 border border-zinc-700"
-              : "text-zinc-600 hover:text-zinc-400"
-          }`}
-          aria-current={mode === "projects" ? "page" : undefined}
-        >
-          Projects
-        </a>
-        <span className="text-zinc-800 mx-1">/</span>
-        <a
-          href="/agents"
-          className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
-            mode === "agents"
-              ? "text-zinc-200 bg-zinc-800/80 border border-zinc-700"
-              : "text-zinc-600 hover:text-zinc-400"
-          }`}
-          aria-current={mode === "agents" ? "page" : undefined}
-        >
-          Agents
-        </a>
+      <nav className="absolute top-8 flex items-center gap-1 text-[11px] font-mono tracking-widest uppercase flex-wrap justify-center" aria-label="Generator mode">
+        {MODES.map((m, i) => (
+          <span key={m.mode} className="flex items-center">
+            {i > 0 && <span className="text-zinc-800 mx-1">/</span>}
+            <a
+              href={m.href}
+              className={`px-3 py-1.5 rounded-full transition-all duration-200 ${
+                mode === m.mode
+                  ? "text-zinc-200 bg-zinc-800/80 border border-zinc-700"
+                  : "text-zinc-600 hover:text-zinc-400"
+              }`}
+              aria-current={mode === m.mode ? "page" : undefined}
+            >
+              {m.label}
+            </a>
+          </span>
+        ))}
       </nav>
 
-      {/* Prefix (projects only) */}
+      {/* Prefix */}
       {name.prefix && (
         <div
           key={`p-${key}`}
@@ -123,17 +144,19 @@ export default function Generator({ mode, generate, tagline, buttonLabel }: Gene
       {/* Name */}
       <h1
         key={`n-${key}`}
-        className="animate-codename text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-center leading-none"
+        className={`animate-codename text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-center leading-none ${
+          !uppercase ? "capitalize" : ""
+        }`}
         style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}
       >
-        {displayName}
+        {formattedDisplay}
       </h1>
 
       {/* Buttons */}
       <div className="flex items-center gap-4 mt-10" role="group" aria-label="Actions">
         <button
           onClick={regen}
-          aria-label={`Generate a new ${mode === "projects" ? "codename" : "agent name"}`}
+          aria-label={`Generate a new name`}
           className="group px-6 py-2.5 text-sm font-medium tracking-wider uppercase border border-zinc-700 rounded-full text-zinc-300 hover:text-white hover:border-zinc-500 transition-all duration-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] cursor-pointer"
         >
           {buttonLabel}
@@ -152,26 +175,25 @@ export default function Generator({ mode, generate, tagline, buttonLabel }: Gene
         </button>
       </div>
 
-      {/* Tagline */}
-      <p className="absolute bottom-14 text-[11px] tracking-[0.25em] text-zinc-700 uppercase font-mono">
-        {tagline}
-      </p>
-
-      {/* OpenClaw nudge (agents only) */}
-      {mode === "agents" && (
+      {/* Nudge */}
+      {nudge && (
         <p className="absolute bottom-[4.5rem] text-[10px] text-zinc-600 font-mono">
-          Naming your{" "}
+          {nudge.text}{" "}
           <a
-            href="https://github.com/openclaw/openclaw"
+            href={nudge.href}
             target="_blank"
             rel="noopener noreferrer"
             className="text-zinc-500 hover:text-zinc-300 transition-colors duration-200 underline underline-offset-2 decoration-zinc-800 hover:decoration-zinc-500"
           >
-            OpenClaw
-          </a>{" "}
-          agent? You&apos;re in the right place.
+            {nudge.linkText}
+          </a>
         </p>
       )}
+
+      {/* Tagline */}
+      <p className="absolute bottom-14 text-[11px] tracking-[0.25em] text-zinc-700 uppercase font-mono">
+        {tagline}
+      </p>
 
       {/* Keyboard hint */}
       <p className="absolute bottom-9 text-[10px] text-zinc-800 font-mono">

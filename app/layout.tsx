@@ -31,6 +31,16 @@ const jsonLd = {
       name: "AI Agent Name Generator",
       url: "https://uncodename.vercel.app/agents",
     },
+    {
+      "@type": "WebPage",
+      name: "Pet Name Generator",
+      url: "https://uncodename.vercel.app/pets",
+    },
+    {
+      "@type": "WebPage",
+      name: "Startup Name Generator",
+      url: "https://uncodename.vercel.app/startups",
+    },
   ],
 };
 

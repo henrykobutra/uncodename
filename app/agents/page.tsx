@@ -9,7 +9,6 @@ function pick<T>(arr: T[]): T {
 }
 
 function generate(): GeneratedName {
-  // 80% single word, 20% two-word
   const twoWord = Math.random() < 0.2;
   return {
     prefix: null,
@@ -25,6 +24,11 @@ export default function AgentsPage() {
       generate={generate}
       tagline="Every great agent needs a name"
       buttonLabel="Initialize Another"
+      nudge={{
+        text: "Naming your",
+        linkText: "OpenClaw",
+        href: "https://github.com/openclaw/openclaw",
+      }}
     />
   );
 }
