@@ -5,9 +5,9 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   name: "UNCODENAME",
-  url: "https://uncodename.com",
+  url: "https://uncodename.vercel.app",
   description:
-    "Generate cinematic project codenames instantly. One click. One name.",
+    "Generate cinematic project codenames and AI agent names instantly. One click. One name.",
   applicationCategory: "UtilityApplication",
   operatingSystem: "Any",
   offers: {
@@ -20,6 +20,18 @@ const jsonLd = {
     name: "Henry Kobutra",
     url: "https://github.com/henrykobutra",
   },
+  hasPart: [
+    {
+      "@type": "WebPage",
+      name: "Project Codename Generator",
+      url: "https://uncodename.vercel.app",
+    },
+    {
+      "@type": "WebPage",
+      name: "AI Agent Name Generator",
+      url: "https://uncodename.vercel.app/agents",
+    },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -38,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "UNCODENAME",
     description: "Every great project starts with a name.",
-    url: "https://uncodename.com",
+    url: "https://uncodename.vercel.app",
     siteName: "UNCODENAME",
     locale: "en_US",
     type: "website",
@@ -49,7 +61,7 @@ export const metadata: Metadata = {
     description: "Every great project starts with a name.",
     creator: "@henrykobutra",
   },
-  metadataBase: new URL("https://uncodename.com"),
+  metadataBase: new URL("https://uncodename.vercel.app"),
   robots: {
     index: true,
     follow: true,
