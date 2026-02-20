@@ -46,6 +46,22 @@ export default function Home() {
 
   useEffect(() => { regen(); }, [regen]);
 
+  // Easter egg #2: console message for the curious
+  useEffect(() => {
+    console.log(
+      "%c█ CLASSIFIED █",
+      "background: #dc2626; color: white; font-size: 20px; font-weight: bold; padding: 8px 16px;"
+    );
+    console.log(
+      "%cYou have accessed a restricted terminal.\nClearance level: ULTRA\n\nIf you're poking around in here, we should talk.\nhttps://github.com/henrykobutra/uncodename",
+      "color: #a1a1aa; font-size: 12px; font-family: monospace; line-height: 1.6;"
+    );
+    console.log(
+      "%c// Built with ☕ and mass declassification",
+      "color: #3f3f46; font-size: 11px; font-style: italic;"
+    );
+  }, []);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === " " || e.key === "Enter") {
@@ -73,10 +89,27 @@ export default function Home() {
     ? `${name.adj} ${name.noun}`.toUpperCase()
     : name.noun.toUpperCase();
 
+  const fullDisplay = name.adj
+    ? `${name.prefix} ${name.adj} ${name.noun}`.toUpperCase()
+    : `${name.prefix} ${name.noun}`.toUpperCase();
+
   return (
-    <main className="relative z-10 flex flex-col items-center justify-center h-screen select-none px-4">
+    <main
+      className="relative z-10 flex flex-col items-center justify-center h-screen select-none px-4"
+      role="application"
+      aria-label="Codename Generator"
+    >
+      {/* Live region for screen readers */}
+      <div className="sr-only" aria-live="assertive" aria-atomic="true">
+        {fullDisplay}
+      </div>
+
       {/* Prefix */}
-      <div key={`p-${key}`} className="animate-prefix text-xs sm:text-sm tracking-[0.35em] text-zinc-500 uppercase font-mono mb-3">
+      <div
+        key={`p-${key}`}
+        className="animate-prefix text-xs sm:text-sm tracking-[0.35em] text-zinc-500 uppercase font-mono mb-3"
+        aria-hidden="true"
+      >
         {name.prefix}
       </div>
 
@@ -90,9 +123,10 @@ export default function Home() {
       </h1>
 
       {/* Buttons */}
-      <div className="flex items-center gap-4 mt-10">
+      <div className="flex items-center gap-4 mt-10" role="group" aria-label="Actions">
         <button
           onClick={regen}
+          aria-label="Generate a new codename"
           className="group px-6 py-2.5 text-sm font-medium tracking-wider uppercase border border-zinc-700 rounded-full text-zinc-300 hover:text-white hover:border-zinc-500 transition-all duration-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] cursor-pointer"
         >
           Declassify Another
@@ -100,6 +134,7 @@ export default function Home() {
 
         <button
           onClick={copyName}
+          aria-label={copied ? "Codename copied to clipboard" : "Copy codename to clipboard"}
           className={`px-4 py-2.5 text-sm font-mono tracking-wider uppercase border rounded-full transition-all duration-200 cursor-pointer ${
             copied
               ? "border-emerald-700 text-emerald-400 animate-copy"
@@ -111,14 +146,43 @@ export default function Home() {
       </div>
 
       {/* Tagline */}
-      <p className="absolute bottom-8 text-[11px] tracking-[0.25em] text-zinc-700 uppercase font-mono">
+      <p className="absolute bottom-14 text-[11px] tracking-[0.25em] text-zinc-700 uppercase font-mono">
         Every great project starts with a name
       </p>
 
       {/* Keyboard hint */}
-      <p className="absolute bottom-3 text-[10px] text-zinc-800 font-mono">
+      <p className="absolute bottom-9 text-[10px] text-zinc-800 font-mono">
         Space / Enter to regenerate
       </p>
+
+      {/* Attribution */}
+      <footer className="absolute bottom-3 text-[10px] text-zinc-700 font-mono">
+        made with ☕ by{" "}
+        <a
+          href="https://github.com/henrykobutra/uncodename"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-zinc-500 hover:text-zinc-300 transition-colors duration-200 underline underline-offset-2 decoration-zinc-800 hover:decoration-zinc-500"
+        >
+          @henrykobutra
+        </a>
+      </footer>
+
+      {/* Easter egg #3: hidden HTML comment for view-source explorers */}
+      {/* 
+        ██████████████████████████████████████████████
+        █                                            █
+        █   AGENT DOSSIER                            █
+        █   Status: ACTIVE                           █
+        █   Classification: ABOVE TOP SECRET         █
+        █                                            █
+        █   "The best codenames are the ones          █
+        █    that make you feel something."           █
+        █                                            █
+        █   — Uncodename Field Manual, Section 7     █
+        █                                            █
+        ██████████████████████████████████████████████
+      */}
     </main>
   );
 }
