@@ -1,6 +1,27 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "UNCODENAME",
+  url: "https://uncodename.com",
+  description:
+    "Generate cinematic project codenames instantly. One click. One name.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "Any",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  author: {
+    "@type": "Person",
+    name: "Henry Kobutra",
+    url: "https://github.com/henrykobutra",
+  },
+};
+
 export const metadata: Metadata = {
   title: "UNCODENAME — Codename Generator",
   description:
@@ -46,6 +67,10 @@ export default function RootLayout({
         {/* Easter egg #1: the curious inspector */}
         <meta name="classified" content="CLEARANCE LEVEL: ULTRA — You weren't supposed to find this." />
         <meta name="recruitment" content="If you're reading this, you're our kind of person. github.com/henrykobutra/uncodename" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className="antialiased">{children}</body>
     </html>
