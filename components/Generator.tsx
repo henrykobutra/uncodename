@@ -157,6 +157,22 @@ export default function Generator({ mode, generate, tagline, buttonLabel }: Gene
         {tagline}
       </p>
 
+      {/* OpenClaw nudge (agents only) */}
+      {mode === "agents" && (
+        <p className="absolute bottom-[4.5rem] text-[10px] text-zinc-600 font-mono">
+          Naming your{" "}
+          <a
+            href="https://github.com/openclaw/openclaw"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-zinc-500 hover:text-zinc-300 transition-colors duration-200 underline underline-offset-2 decoration-zinc-800 hover:decoration-zinc-500"
+          >
+            OpenClaw
+          </a>{" "}
+          agent? You&apos;re in the right place.
+        </p>
+      )}
+
       {/* Keyboard hint */}
       <p className="absolute bottom-9 text-[10px] text-zinc-800 font-mono">
         Space / Enter to regenerate

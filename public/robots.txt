@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://uncodename.vercel.app/sitemap.xml
